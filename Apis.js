@@ -1,12 +1,24 @@
 const express =  require('express');
 const mongoose = require('mongoose');
 const collection = require('./mongodb');
+const cors = require('cors');
+
 
 
 const app = express();
 
 //convert data into json format
-app.use(express.json())
+app.use(express.json());
+
+app.use(cors({
+     origin: 'http://localhost:4200'
+   }));
+
+app.use(function(req, res, next) {
+    
+     res.header('Access-Control-Expose-Headers','x-access-token, x-refresh-token')
+     next();
+   });
 
 app.use(express.urlencoded({extended: false}))
 
@@ -16,9 +28,6 @@ app.get('/api', async (req, res) =>{
      console.log(data)
      res.send(data);
 
-     // data.find({}).then((list)=>{
-     //      res.send(list)
-     // })
 },error =>{
      console.log(error)
 })
@@ -47,18 +56,7 @@ app.post('/api', async (req,res)=>{
 
      const listData = await  collection.insertMany(data);
      console.log(listData)
-
-     // const db = await dbConnect();
-     // const result = await db.insertOne(req.body);
-     // res.send(result);
-
-     // let listOfData = req.body.companyName;
-     // let newdata = new data({
-     //      listOfData
-     // })
-     // newdata.save().then((response) =>{
-     //      res.send(response);
-     // })
+     res.send(listData)
  })
 
 
@@ -66,7 +64,6 @@ app.delete('/api', async (req, res) =>{
      const data = await collection;
      const { ids } = req.body; // Expecting an array of IDs in the request body
      const result = await data.deleteMany({ _id: { $in: ids } });
-     // res.send(result)
      res.status(200).json({ message: 'Records deleted successfully', deletedCount: result.deletedCount });
 })
 

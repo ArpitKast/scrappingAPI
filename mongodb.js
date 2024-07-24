@@ -1,18 +1,3 @@
-// const {MongoClient} = require('mongodb');
-// const url = "mongodb://0.0.0.0:27017/";
-
-// const dataBase = 'scrapping';
-// const client  = new MongoClient(url);
-
-// async function dbConnect(){
-//      let result = await client.connect();
-//      let db = result.db(dataBase);
-//      return  db.collection('webScrapping');
-  
-//  }
- 
-//  module.exports = dbConnect;
-
 const mongoose  = require('mongoose');
 const connect  = mongoose.connect("mongodb://0.0.0.0:27017/webScrapping");
 
