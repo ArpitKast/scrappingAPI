@@ -8,6 +8,9 @@ connect.then(() =>{
 })
 
 const listSchema = new mongoose.Schema({
+     logo:{
+          type: String
+     },
      companyName:{
           type: String,
           require: true,

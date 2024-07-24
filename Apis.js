@@ -2,10 +2,26 @@ const express =  require('express');
 const mongoose = require('mongoose');
 const collection = require('./mongodb');
 const cors = require('cors');
+const multer = require("multer");
+const path = require('path')
+const bodyParser = require('body-parser');
 
+const storage = multer.diskStorage({
+     destination: (req, file, cb) =>{
+          cb(null, "images");
+     },
+     filename:(req,file,cb)=>{
+          console.log(file)
+          cb(null, file.fieldname + "_" + Date.now() + path.extname(file.originalname))
+     }
+})
 
+const upload = multer({storage: storage})
 
 const app = express();
+
+app.use(bodyParser.json({ limit: '50mb' }));
+app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 
 //convert data into json format
 app.use(express.json());
@@ -39,9 +55,10 @@ app.get('/api/:id', async (req, res)=>{
 })
 
 // Post data
-app.post('/api', async (req,res)=>{
-
+app.post('/api', upload.single('logo'), async (req,res)=>{
+     console.log("req.file", req.file)
      const data = {
+          logo: req.file ? req.file.path : null,
           companyName : req.body.companyName,
           socialMediaLogo: req.body.socialMediaLogo,
           description: req.body.description,
